@@ -31,9 +31,9 @@ public class BluetoothHandler extends Activity {
 	private final int RECIEVE_MESSAGE =1;
 	private Context context;
 
-	
-	
-	
+
+
+
 	private static String address;
 
 	public void dispose() {
@@ -41,24 +41,24 @@ public class BluetoothHandler extends Activity {
 		try {
 			btSocket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		btSocket = null;
 		try {
 			mConnectedThread.join();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		mConnectedThread = null;
 	}
-	
-	
-	
+
+
+
 	public void write(String data) {
 
-		mConnectedThread.write(data);
+		if(mConnectedThread.isAlive())
+			mConnectedThread.write(data);
 
 	}
 
@@ -232,5 +232,5 @@ public class BluetoothHandler extends Activity {
 	public void onBackPressed() {
 		//do nothing
 	}
-	
+
 }
