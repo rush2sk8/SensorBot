@@ -31,9 +31,6 @@ public class BluetoothHandler extends Activity {
 	private final int RECIEVE_MESSAGE =1;
 	private Context context;
 
-
-
-
 	private static String address;
 
 	public void dispose() {
@@ -45,6 +42,7 @@ public class BluetoothHandler extends Activity {
 			e.printStackTrace();
 		}
 		btSocket = null;
+	
 		try {
 			mConnectedThread.join();
 		} catch (InterruptedException e) {
@@ -73,8 +71,6 @@ public class BluetoothHandler extends Activity {
 		context = c;// get Bluetooth adapter
 		checkBTState();
 		createHandler();
-
-		Log.d(TAG, "...onResume - try connect...");
 
 		// Set up a pointer to the remote node using it's address.
 		BluetoothDevice device = btAdapter.getRemoteDevice(address);
