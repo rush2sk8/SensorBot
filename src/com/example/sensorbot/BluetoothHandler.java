@@ -270,19 +270,29 @@ public class BluetoothHandler extends Activity {
          * */
 		public ConnectedThread(BluetoothSocket socket) {
 
-            //temporary streams		
+            //the reason we are using temporary steams is because if there is some exception throew whcih is not likely then we dont want the
+            //iv's directly referenceing somehting that is broken.
 			InputStream tmpIn = null;
 			OutputStream tmpOut = null;
 
 			try {
+			    
+			    //gets the streams
 				tmpIn = socket.getInputStream();
 				tmpOut = socket.getOutputStream();
+			
+			    
 			} catch (IOException e) { }
 
+            //makes iv's equal to the streams
 			mmInStream = tmpIn;
 			mmOutStream = tmpOut;
 		}
 
+        /**
+         * Method that is inherited from the thread class
+         * basically whatever code is in here will be excecuted in a background thread
+         * */
 		public void run() {
 			byte[] buffer = new byte[256];  // buffer store for the stream
 			int bytes; // bytes returned from read()
@@ -292,6 +302,8 @@ public class BluetoothHandler extends Activity {
 				try {
 					// Read from the InputStream
 					bytes = mmInStream.read(buffer);	
+					
+					//sends data from other device to the handler
 					h.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer).sendToTarget();		
 				} catch (IOException e) {
 					break;
@@ -300,15 +312,19 @@ public class BluetoothHandler extends Activity {
 		}
 
 		/* Call this from the main activity to send data to the remote device */
-
+	    /**
+	     * Will write the string to the other device
+	     * 
+	     * */
 		public void write(String message) {
 			Log.d(TAG, "...Data to send: " + message + "...");
 			byte[] msgBuffer = message.getBytes();
 
 			try {
+			    
 				if(mmOutStream!=null)
 					mmOutStream.write(msgBuffer);
-
+					
 			} catch (IOException e) {
 				Log.d(TAG, "...Error data send: " + e.getMessage() + "...");     
 				Toast.makeText(getApplicationContext(), "Caught an exception while sending data", Toast.LENGTH_LONG).show();
@@ -319,7 +335,7 @@ public class BluetoothHandler extends Activity {
 
 	}
 
-
+    //disables the background press
 	public void onBackPressed() {
 		//do nothing
 	}
