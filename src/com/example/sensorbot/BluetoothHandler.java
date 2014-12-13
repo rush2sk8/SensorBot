@@ -134,14 +134,20 @@ public class BluetoothHandler extends Activity {
 
 		// Establish the connection.  This will block until it connects.
 		Log.d(TAG, "...Connecting...");
+	
 		try {
+		    
+		    //waits here until it connects
 			btSocket.connect();
 			Log.d(TAG, "....Connection ok...");
+	
 		} catch (IOException e) {
-			try {
+	
+	    	try {
 
-
+                //if the exception is thrown then safely dispose of the socket if not done can cause memory leak
 				btSocket.close();
+		
 			} catch (IOException e2) {
 				errorExit("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.getMessage() + ".");
 			}
@@ -150,16 +156,23 @@ public class BluetoothHandler extends Activity {
 		// Create a data stream so we can talk to server.
 		Log.d(TAG, "...Create Socket...");
 
+        //creates a new thread that will handle all of the data transmission
 		mConnectedThread = new ConnectedThread(btSocket);
+		
+		//starts the thread
 		mConnectedThread.start();
 
 	}
 
+    /**
+    * Creates an android handler that will send recieved messages to a target
+    * 
+     * */
 	private void createHandler(){
 		h = new Handler() {
 			public void handleMessage(android.os.Message msg) {
 				switch (msg.what) {
-				case RECIEVE_MESSAGE:													// if receive massage
+				case RECIEVE_MESSAGE:												
 
 					//Log.d(TAG, "...String:"+ sb.toString() +  "Byte:" + msg.arg1 + "...");
 					break;
@@ -170,19 +183,31 @@ public class BluetoothHandler extends Activity {
 	}
 
 
-	@Override
+	/**
+	 * Called by the android system when user swtiches into a multitaking mode.
+	 * 
+	 * During the system pause we close the socket
+	 * 
+	 * */
 	public void onPause() {
 		super.onPause();
 
 		Log.d(TAG, "...In onPause()...");
 
-		try     {
+		try  {
+		    
+		    //closes a socket
 			btSocket.close();
+		
+		    
 		} catch (IOException e2) {
 			errorExit("Fatal Error", "In onPause() and failed to close socket." + e2.getMessage() + ".");
 		}
 	}
 
+    /**
+     * Checks the state of the bluetooth radio
+     * */
 	private void checkBTState() {
 
 		if(btAdapter==null) { 
@@ -192,38 +217,62 @@ public class BluetoothHandler extends Activity {
 				Log.d(TAG, "...Bluetooth ON...");
 			} else {
 
+                //callls native os intent (activity) that will ask user to turn on the bluetooth radio
 				Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			
+			    //calls a background activity that will ask the user to turn on the bluetooth radio
 				startActivityForResult(enableBtIntent, 1);
 			}
 		}
 	}
 
+    //makes a toast error message and closes app
 	private void errorExit(String title, String message){
 		Toast.makeText(getBaseContext(), title + " - " + message, Toast.LENGTH_LONG).show();
 		finish();
 	}
 
-
+    /**
+     * Creates a connection between 2 devices
+     * */
 	private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
 		if(Build.VERSION.SDK_INT >= 10){
 			try {
+				
+				//creates a native method to create an unencrypted socket 
 				final Method  m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[] { UUID.class });
+				
+				//wiill return the socket
 				return (BluetoothSocket) m.invoke(device, MY_UUID);
+		
 			} catch (Exception e) {
 				Log.e(TAG, "Could not create Insecure RFComm Connection",e);
 			}
 		}
+		
 		return  device.createRfcommSocketToServiceRecord(MY_UUID);
 	}
 
+    /**
+     * @author Rushad Antia
+     * 
+     * an inner class that will control low level in and output
+     * */
 	private class ConnectedThread extends Thread {
+	
+	    //2 ivs that hold elements for every connection in a socket
 		private final InputStream mmInStream;
 		private final OutputStream mmOutStream;
 
+        /**
+         * Creates an instance of the class and will break apart the socket into 
+         * and out in input stream
+         * */
 		public ConnectedThread(BluetoothSocket socket) {
+
+            //temporary streams		
 			InputStream tmpIn = null;
 			OutputStream tmpOut = null;
-
 
 			try {
 				tmpIn = socket.getInputStream();
