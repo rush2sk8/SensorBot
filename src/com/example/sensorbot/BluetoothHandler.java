@@ -17,7 +17,14 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-//Author Rushad Antia
+/**
+ * @author Rushad Antia
+ * 
+ * This class reduces the baggage of setting up a bluetooth 
+ * connection.
+ * 
+ * 
+ * */
 
 public class BluetoothHandler extends Activity {
 
@@ -40,53 +47,82 @@ public class BluetoothHandler extends Activity {
 	//MAC address to connect to 
 	private static String address;
 
-	//called by the android OS that will safely dispose of the activity
+	/**
+	 * called by the android OS that will safely dispose of the activity
+	 * */
 	public void dispose() {
 		
 		//killz the adapter
 		btAdapter = null;
 		try {
+		    
+		    //closes the socket
 			btSocket.close();
 		} catch (IOException e) {
 
 			e.printStackTrace();
 		}
+		
+		//disposes the closed socket
 		btSocket = null;
 	
 		try {
+		    
+		    //joins the other thread to the main thread
 			mConnectedThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+		//disposes the thread
 		mConnectedThread = null;
 	}
 
 
-
+    /**
+     * Sends data to the end device
+     * */
 	public void write(String data) {
 
-		if(mConnectedThread.isAlive())
+    
+		if(mConnectedThread.isAlive()) //error checking
 			mConnectedThread.write(data);
 
 	}
 
+    /**
+     * Self Explanatory
+     * @returns true if socket is available 
+     * */
 	public boolean isSocketAvailable() {
 		return btSocket.isConnected();
 	}
 
+    /**
+     * Creates an instance oF the bluetooth handler
+     * 
+     * */
 	public BluetoothHandler(Context c, String ad) {
 
+        //makes the ivs = to the parameters
 		address = ad;
 		btAdapter = BluetoothAdapter.getDefaultAdapter();	
 		context = c;// get Bluetooth adapter
+	
+	    //checks bluetooth radio
 		checkBTState();
+		
+		//creates handler to recieve the data
 		createHandler();
 
 		// Set up a pointer to the remote node using it's address.
 		BluetoothDevice device = btAdapter.getRemoteDevice(address);
 
 		try {
+		    
+		    //creates a bluetooth socket (connection) between this device and the other device
 			btSocket = createBluetoothSocket(device);
+	
 		} catch (IOException e) {
 			errorExit("Fatal Error", "In onResume() and socket create failed: " + e.getMessage() + ".");
 		}
