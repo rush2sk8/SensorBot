@@ -12,14 +12,20 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+/**
+ * @author
+ * 
+ * A classs that is called initially that allows the user to select 
+ * a device to connect to based on devices that are paired to that android device
+ * 
+ * */
+
 public class ChooseDeviceToConnectTo extends Activity {
 
-	@Override
-	public void onBackPressed() {
-
-	}
+	//disables the back button
+	public void onBackPressed() {}
 	
-	@Override
+	//does stuff
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choose_device_to_connect_to);
