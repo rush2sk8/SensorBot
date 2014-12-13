@@ -17,15 +17,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-/**
- * @author Rushad Antia
- * 
- * The class that helps cut down on the baggage of setting up
- * a bluetooth connection. 
- * 
- *Subclass of activity to safely make a connection.
- ** /
-
+//Author Rushad Antia
 
 public class BluetoothHandler extends Activity {
 
@@ -38,16 +30,20 @@ public class BluetoothHandler extends Activity {
 	//an android tool that can properly recieve messages
 	private Handler h;
 
-
+	//bluetooth adapter
 	private BluetoothAdapter btAdapter = null;
 	private BluetoothSocket btSocket = null;
 	private ConnectedThread mConnectedThread;
 	private final int RECIEVE_MESSAGE =1;
 	private Context context;
 
+	//MAC address to connect to 
 	private static String address;
 
+	//called by the android OS that will safely dispose of the activity
 	public void dispose() {
+		
+		//killz the adapter
 		btAdapter = null;
 		try {
 			btSocket.close();
