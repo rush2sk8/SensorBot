@@ -17,13 +17,27 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+/**
+ * @author Rushad Antia
+ * 
+ * The class that helps cut down on the baggage of setting up
+ * a bluetooth connection. 
+ * 
+ *Subclass of activity to safely make a connection.
+ ** /
+
+
 public class BluetoothHandler extends Activity {
 
+	//used for debugging
 	private static final String TAG = "bluetooth2";
 
+	//id necessary for making a bluetooth connection
 	private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
+	//an android tool that can properly recieve messages
 	private Handler h;
+
 
 	private BluetoothAdapter btAdapter = null;
 	private BluetoothSocket btSocket = null;
