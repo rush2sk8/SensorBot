@@ -13,13 +13,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 /**
- * @author
- * 
- * A classs that is called initially that allows the user to select 
+ *
+ * A class that is called initially that allows the user to select 
  * a device to connect to based on devices that are paired to that android device
  * 
  * */
-
 public class ChooseDeviceToConnectTo extends Activity {
 
 	//disables the back button

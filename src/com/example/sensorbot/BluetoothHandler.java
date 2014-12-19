@@ -22,10 +22,7 @@ import android.widget.Toast;
  * 
  * This class reduces the baggage of setting up a bluetooth 
  * connection.
- * 
- * 
  * */
-
 public class BluetoothHandler extends Activity {
 
 	//used for debugging
